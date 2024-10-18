@@ -1,4 +1,4 @@
-//`timescale 1ns / 1ps
+`timescale 1ns / 1ps
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 `include "multiplicador_32_bits_FP_IEEE.sv"
