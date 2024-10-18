@@ -10,7 +10,7 @@ class driver extends uvm_driver #(item_secuencia);
 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if(!uvm_config_db#(virtual interfaz)::get(this,"","des_vif", vif))
+    if(!uvm_config_db#(virtual interfaz)::get(this,"", "vif", vif))
       `uvm_fatal("DRV", "No se obtuvo la vif");
   endfunction
 
