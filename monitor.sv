@@ -20,7 +20,7 @@ class monitor extends uvm_monitor;
     super.run_phase(phase);
     forever begin
       @(vif.clk);
-        item_secuencia item_monitor = item_secuencia::type_id::create("item_monitor");
+        item_secuencia item_monitor <= item_secuencia::type_id::create("item_monitor");
         item_monitor.fp_X = vif.fp_X;
         item_monitor.fp_Y = vif.fp_Y;
         item_monitor.fp_Z = vif.fp_Z;
