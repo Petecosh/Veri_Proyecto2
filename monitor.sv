@@ -19,16 +19,16 @@ class monitor extends uvm_monitor;
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
-      @(vif.clk);
-        item_secuencia item_monitor <= item_secuencia::type_id::create("item_monitor");
-        item_monitor.fp_X = vif.fp_X;
-        item_monitor.fp_Y = vif.fp_Y;
-        item_monitor.fp_Z = vif.fp_Z;
-        item_monitor.r_mode = vif.r_mode;
-        item_monitor.ovrf = vif.ovrf;
-        item_monitor.udrf = vif.udrf;
-        mon_analysis_port.write(item_monitor);
-        `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
+      #10
+      item_secuencia item_monitor = item_secuencia::type_id::create("item_monitor");
+      item_monitor.fp_X = vif.fp_X;
+      item_monitor.fp_Y = vif.fp_Y;
+      item_monitor.fp_Z = vif.fp_Z;
+      item_monitor.r_mode = vif.r_mode;
+      item_monitor.ovrf = vif.ovrf;
+      item_monitor.udrf = vif.udrf;
+      mon_analysis_port.write(item_monitor);
+      `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
     end
   endtask
 endclass
