@@ -10,7 +10,7 @@ class item_seq extends uvm_sequence_item;
   bit udrf;
 
   virtual function string print();
-    return $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, R_mode = %0d, Ovrf = %0d, Udrf = %0d", fp_X, fp_Y, fp_Z, r_mode, ovrf, udrf);
+    return $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, R_mode = %h, Ovrf = %h, Udrf = %h", fp_X, fp_Y, fp_Z, r_mode, ovrf, udrf);
   endfunction
 
   function new(string name = "item_seq");
