@@ -1,5 +1,7 @@
 class item_secuencia extends uvm_sequence_item;
+
   `uvm_object_utils(item_secuencia)
+
   rand bit [2:0] r_mode;
   rand bit [31:0] fp_X;
   rand bit [31:0] fp_Y;

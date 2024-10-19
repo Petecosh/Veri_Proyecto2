@@ -1,4 +1,5 @@
 class gen_secuencia extends uvm_sequence;
+
   `uvm_object_utils(gen_secuencia);
   
   function new(string name = "gen_secuencia");
