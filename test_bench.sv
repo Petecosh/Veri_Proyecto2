@@ -5,10 +5,10 @@ import uvm_pkg::*;
 `include "interfaz.sv"
 `include "sequence_item.sv"
 `include "secuencia.sv"
-`include "monitor.sv"
 `include "driver.sv"
-`include "scoreboard.sv"
+`include "monitor.sv"
 `include "agente.sv"
+`include "scoreboard.sv"
 `include "ambiente.sv"
 `include "test.sv"
 

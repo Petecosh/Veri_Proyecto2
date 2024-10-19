@@ -1,4 +1,4 @@
-class driver extends uvm_driver #(item_secuencia);
+class driver extends uvm_driver #(item_seq);
 
   `uvm_component_utils(driver)
 
@@ -17,7 +17,7 @@ class driver extends uvm_driver #(item_secuencia);
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
-      item_secuencia item_drv;
+      item_seq item_drv;
       `uvm_info("DRV", $sformatf("Espera item del sequencer"), UVM_HIGH);
       seq_item_port.get_next_item(item_drv);
       drive_item(item_drv);
@@ -25,7 +25,7 @@ class driver extends uvm_driver #(item_secuencia);
     end
   endtask
 
-  virtual task drive_item(item_secuencia item_drv);
+  virtual task drive_item(item_seq item_drv);
     @(vif.clk);
       vif.fp_X <= item_drv.fp_X;
       vif.fp_Y <= item_drv.fp_Y;

@@ -6,14 +6,14 @@ class scoreboard extends uvm_scoreboard;
     super.new(name, parent);
   endfunction
 
-  uvm_analysis_imp #(item_secuencia, scoreboard) m_analysis_imp;
+  uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;
 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     m_analysis_imp = new("m_analysis_imp", this);
   endfunction
 
-  virtual function write(item_secuencia item_sc);
+  virtual function write(item_seq item_sc);
 
     //bit [7:0] exp_sc;
     //bit [22:0] frac_sc;

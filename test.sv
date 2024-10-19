@@ -8,7 +8,7 @@ class base_test extends uvm_test;
   
   ambiente ambiente_inst;
   gen_secuencia  secuencia;
-  virtual interfaz  vif;
+  virtual interfaz vif;
 
   virtual function void build_phase(uvm_phase phase);
 
