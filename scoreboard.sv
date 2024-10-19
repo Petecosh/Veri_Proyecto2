@@ -30,7 +30,7 @@ class scoreboard extends uvm_scoreboard;
     `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d r_mode = %0d, ovrf = %0d, udrf = %0d", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
     
-    if(item_sc.result != sc_result) begin
+    if(item_sc.fp_Z != sc_result) begin
       `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result))
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result), UVM_HIGH)
