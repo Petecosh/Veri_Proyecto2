@@ -20,7 +20,7 @@ class monitor extends uvm_monitor;
     super.run_phase(phase);
     forever begin
       @(vif.clk);
-        if (1) begin
+        //if (1) begin
           item_seq item_monitor = item_seq::type_id::create("item_monitor");
           item_monitor.fp_X = vif.fp_X;
           item_monitor.fp_Y = vif.fp_Y;
@@ -30,7 +30,7 @@ class monitor extends uvm_monitor;
           item_monitor.udrf = vif.udrf;
           mon_analysis_port.write(item_monitor);
           `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
-        end
+        //end
     end
   endtask
 endclass
