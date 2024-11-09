@@ -15,23 +15,23 @@ class scoreboard extends uvm_scoreboard;
 
   virtual function write(item_seq item_sc);
 
-    //bit [7:0] exp_sc;
-    //bit [22:0] frac_sc;
-    //bit sign_sc;
-    //bit [32:0] sc_result;
+    sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
+    exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111;
 
-    //sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
-    //exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111;
-    //frac_sc = item_sc.fp_X[22:0] * item_sc.fp_Y[22:0];
+    frac_X = {1, item_sc.fp_X[22:0]};
+    frac_Y = {1, item_sc.fp_Y[22:0]};
+
+    frac_sc = frac_X * frac_Y;
     //sc_result = {sign_sc, exp_sc, frac_sc};
     int sc_result;
     sc_result = 0;
 
-    `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d r_mode = %0d, ovrf = %0d, udrf = %0d", 
+    `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, r_mode = %0d, ovrf = %0d, udrf = %0d", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
     
     if(item_sc.fp_Z != sc_result) begin
       `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result))
+      $display("[%g] Resultado Multiplicacion Fraccion", $time, frac_sc);
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result), UVM_HIGH)
     end
