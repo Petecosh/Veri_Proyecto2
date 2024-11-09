@@ -15,6 +15,9 @@ class scoreboard extends uvm_scoreboard;
 
   virtual function write(item_seq item_sc);
 
+    //int sign_sc;
+    //int exp_sc;
+
     sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
     exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111;
 
@@ -23,7 +26,7 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
     //sc_result = {sign_sc, exp_sc, frac_sc};
-    int sc_result;
+    //int sc_result;
     sc_result = 0;
 
     `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, r_mode = %0d, ovrf = %0d, udrf = %0d", 
