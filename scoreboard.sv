@@ -29,8 +29,8 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
     //sc_result = {sign_sc, exp_sc, frac_sc};
-    int sc_result;
-    sc_result = 0;
+    //int sc_result;
+    int sc_result = 0;
 
     `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, r_mode = %0d, ovrf = %0d, udrf = %0d", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
