@@ -48,6 +48,9 @@ class scoreboard extends uvm_scoreboard;
       
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result), UVM_HIGH)
+      $display("[%g] Resultado Signo: fp_Z = %0h, sc_result = %0h", $time, item_sc.fp_Z[31], sc_result[31]);
+      $display("[%g] Resultado Exponente: fp_Z = %0h, sc_result = %0h", $time, item_sc.fp_Z[30:23], sc_result[30:23]);
+      $display("[%g] Resultado Fraccion: fp_Z = %0h, sc_result = %0h", $time, item_sc.fp_Z[22:0], sc_result[22:0]);
     end
 
   endfunction
