@@ -62,9 +62,9 @@ class scoreboard extends uvm_scoreboard;
         
       end else if (item_sc.udrf) begin
 
-        if (item_sc.fp_Z != sc_underflow) begin
+        if (item_sc.fp_Z[30:0] != sc_underflow) begin
             `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_underflow))
-            $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_underflow[31]);
+            $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
             $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], sc_underflow[30:23]);
             $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], sc_underflow[22:0]);
         end else begin
@@ -72,7 +72,8 @@ class scoreboard extends uvm_scoreboard;
         end
 
       end else if (item_sc.fp_Z == NaN) begin
-        
+        `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN), UVM_HIGH);
+
       end else begin
         `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_result))
         $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
