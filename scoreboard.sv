@@ -37,7 +37,7 @@ class scoreboard extends uvm_scoreboard;
     
     if(item_sc.fp_Z != sc_result) begin
       `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result))
-      $display("[%g] Resultado Multiplicacion Fraccion", $time, frac_sc);
+      $display("[%g] Resultado Multiplicacion Fraccion %0h", $time, frac_sc);
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %0d Result_sc = %0d", item_sc.fp_Z, sc_result), UVM_HIGH)
     end
