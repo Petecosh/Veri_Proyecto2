@@ -11,7 +11,7 @@ class scoreboard extends uvm_scoreboard;
   bit [23:0] frac_X; 
   bit [23:0] frac_Y;
   bit [47:0] frac_sc;
-  int sc_result;
+  bit [31:0] sc_result;
 
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;
 
@@ -34,9 +34,8 @@ class scoreboard extends uvm_scoreboard;
         frac_sc = frac_sc >> 1;
         exp_sc = exp_sc + 1;
     end
-    
-    //sc_result = {sign_sc, exp_sc, frac_sc};
-    sc_result = 0;
+
+    sc_result = {sign_sc, exp_sc, frac_sc[46:24]};
 
     `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, r_mode = %0d, ovrf = %0d, udrf = %0d", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
