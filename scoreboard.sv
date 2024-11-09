@@ -29,6 +29,12 @@ class scoreboard extends uvm_scoreboard;
     frac_Y = {1, item_sc.fp_Y[22:0]};
 
     frac_sc = frac_X * frac_Y;
+
+    if (frac_sc[47]) begin
+        frac_sc = frac_sc >> 1;
+        exp_sc = exp_sc + 1;
+    end
+    
     //sc_result = {sign_sc, exp_sc, frac_sc};
     sc_result = 0;
 
