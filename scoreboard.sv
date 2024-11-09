@@ -71,7 +71,7 @@ class scoreboard extends uvm_scoreboard;
             `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_underflow), UVM_HIGH);
         end
 
-      end else if (item_sc.fp_Z == NaN) begin
+      end else if (item_sc.fp_Z[30:0] == NaN) begin
         `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN), UVM_HIGH);
 
       end else begin
