@@ -6,6 +6,13 @@ class scoreboard extends uvm_scoreboard;
     super.new(name, parent);
   endfunction
 
+  bit sign_sc;
+  bit [7:0] exp_sc;
+  bit [23:0] frac_X; 
+  bit [23:0] frac_Y;
+  bit [47:0] frac_sc;
+  int sc_result;
+
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;
 
   virtual function void build_phase(uvm_phase phase);
@@ -13,13 +20,7 @@ class scoreboard extends uvm_scoreboard;
     m_analysis_imp = new("m_analysis_imp", this);
   endfunction
 
-  virtual function write(item_seq item_sc);
-
-    bit sign_sc;
-    bit [7:0] exp_sc;
-    bit [23:0] frac_X; 
-    bit [23:0] frac_Y;
-    bit [47:0] frac_sc;  
+  virtual function write(item_seq item_sc);  
 
     sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
     exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111;
@@ -29,7 +30,6 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
     //sc_result = {sign_sc, exp_sc, frac_sc};
-    //int sc_result;
     sc_result = 0;
 
     `uvm_info("SCBD", $sformatf("fp_X = %0d, fp_Y = %0d, fp_Z = %0d, r_mode = %0d, ovrf = %0d, udrf = %0d", 
