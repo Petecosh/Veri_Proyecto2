@@ -92,7 +92,7 @@ class scoreboard extends uvm_scoreboard;
     endcase
 
     if (frc_Z_norm[26]) begin
-          frc_Z_norm = frc_Z_norm >> 1;
+          //frc_Z_norm = frc_Z_norm >> 1;
           exp_sc = exp_sc + 1;
     end
 
