@@ -95,7 +95,7 @@ class scoreboard extends uvm_scoreboard;
 
       4: begin
         //
-        frc_Z_norm[26:3] = {0, frc_Z_norm[24:1]};
+        frc_Z_norm[26:3] = {0, frc_Z_norm[25:2]};
         if (frc_Z_norm[2]) begin
             
             frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
