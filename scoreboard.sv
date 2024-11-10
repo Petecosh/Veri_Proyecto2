@@ -47,6 +47,9 @@ class scoreboard extends uvm_scoreboard;
 
     sc_result = {sign_sc, exp_sc[7:0], frac_sc[46:24]};
 
+    `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
+                                 item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
+
     case (item_sc.r_mode)
 
       0: begin
