@@ -42,19 +42,19 @@ class scoreboard extends uvm_scoreboard;
 
     if (frac_sc[47] == 1) begin
       // El resultado está en la forma 1.xxxx, así que desplaza uno a la derecha
-      $display("se corrio");
+      //$display("se corrio");
       frac_sc = frac_sc >> 1;
       exp_sc = exp_sc + 1;
     end else begin
-      $display("%b",frac_sc);
+      //$display("%b",frac_sc);
       // El resultado ya está normalizado en la forma 0.xxxx, mantén el valor tal cual
       frac_sc = {frac_sc[46:1],1'b0};  // Selecciona los bits 23 más significativos
-      $display("%b",frac_sc);
+      //$display("%b",frac_sc);
     end
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        $display("sticky_bit 0" );
+        //$display("sticky_bit 0" );
         sticky_bit = 0;
     end else begin
         sticky_bit = 1;
