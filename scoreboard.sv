@@ -40,6 +40,50 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
 
+    if (frac_sc[47]) begin
+            frac_sc = frac_sc >> 1;
+            exp_sc = exp_sc + 1;
+        end
+
+    sc_result = {sign_sc, exp_sc[7:0], frac_sc[46:24]};
+
+    case (item_sc.r_mode)
+
+      0: begin
+          
+      end
+
+      1: begin
+            
+      end
+
+      2: begin
+        if (item_sc.fp_Z[31]) begin
+            sc_result = sc_result + 1'b1;
+        end
+      end
+
+      3: begin
+        if (!(item_sc.fp_Z[31])) begin
+            sc_result = sc_result + 1'b1;
+        end
+      end
+
+      4: begin
+
+      end
+
+      default: begin
+          `uvm_fatal("SCBD","Modo de redondeo invalido")
+      end
+    
+    endcase
+
+    /*if (frc_Z_norm[26]) begin
+          frc_Z_norm = frc_Z_norm >> 1;
+          exp_sc = exp_sc + 1;
+    end
+
     // Mux normalizer
     if (!(frac_sc[47])) begin
         frac_sc = {frac_sc[46:0], 0};
@@ -47,9 +91,9 @@ class scoreboard extends uvm_scoreboard;
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        sticky_bit = 1;
-    end else begin
         sticky_bit = 0;
+    end else begin
+        sticky_bit = 1;
     end
 
     frc_Z_norm = {frac_sc[47:22], sticky_bit};
@@ -96,7 +140,7 @@ class scoreboard extends uvm_scoreboard;
           exp_sc = exp_sc + 1;
     end
 
-    sc_result = {sign_sc, exp_sc, frc_Z_norm[25:3]};
+    sc_result = {sign_sc, exp_sc, frc_Z_norm[25:3]};*/
     
     if(item_sc.fp_Z != sc_result) begin
 
