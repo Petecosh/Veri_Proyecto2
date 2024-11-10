@@ -60,7 +60,7 @@ class scoreboard extends uvm_scoreboard;
         sticky_bit = 1;
     end
 
-    frc_Z_norm = {frac_sc[47:22], sticky_bit};
+    frc_Z_norm = {frac_sc[47:22], (frac_sc[23]^sticky_bit)};
 
     `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
