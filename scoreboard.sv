@@ -42,7 +42,7 @@ class scoreboard extends uvm_scoreboard;
 
     if (frac_sc[47] == 1) begin
       // El resultado está en la forma 1.xxxx, así que desplaza uno a la derecha
-      $display("se corrio")
+      $display("se corrio");
       frac_sc = frac_sc >> 1;
       exp_sc = exp_sc + 1;
     end else begin
@@ -52,7 +52,7 @@ class scoreboard extends uvm_scoreboard;
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        $display("sticky_bit 0" )
+        $display("sticky_bit 0" );
         sticky_bit = 0;
     end else begin
         sticky_bit = 1;
