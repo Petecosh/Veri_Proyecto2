@@ -88,7 +88,7 @@ class scoreboard extends uvm_scoreboard;
               end
             end 
           end
-
+      end
       1: begin
                    
       end
