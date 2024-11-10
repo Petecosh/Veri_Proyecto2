@@ -49,29 +49,29 @@ class scoreboard extends uvm_scoreboard;
 
     case (item_sc.r_mode)
 
-      3'b000: begin
+      0: begin
           
       end
 
-      3'b001: begin
+      1: begin
             
       end
 
-      3'b010: begin
+      2: begin
         if (item_sc.fp_Z[31]) begin
-            sc_result = sc_result + 1;
+            sc_result = sc_result + 1'b1;
         end
       end
 
-      3'b011: begin
+      3: begin
         if (!(item_sc.fp_Z[31])) begin
-            sc_result = sc_result + 1;
+            sc_result = sc_result + 1'b1;
         end
       end
 
-      3'b100: begin
+      4: begin
         if (item_sc.fp_Z[0]) begin
-            sc_result = sc_result + 1;
+            sc_result = sc_result + 1'b1;
         end
       end
 
