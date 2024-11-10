@@ -54,7 +54,7 @@ class scoreboard extends uvm_scoreboard;
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        $display("sticky_bit 0" );
+        $display("what que jeta sticky_bit 0" );
         sticky_bit = 0;
     end else begin
         sticky_bit = 1;
@@ -68,17 +68,26 @@ class scoreboard extends uvm_scoreboard;
     case (item_sc.r_mode)
 
       0: begin
-        if (frc_Z_norm[1]) begin
+        /*if (frc_Z_norm[1]) begin
             $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
           end 
-         /*if (frc_Z_norm[1]) begin
+          */
+          if (frc_Z_norm[1]) begin
             if (frc_Z_norm[0]) begin
               $display("suma");
               frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
-            end
-          end */
-      end
+            end else begin
+              if (frc_Z_norm[0] || frc_Z_norm[1]) begin
+                frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;  // Redondea hacia arriba
+              end else begin
+              // En el caso de empate exacto, redondea al número par más cercano
+                if (frc_Z_norm[2] == 1'b1) begin
+                  frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;  // Redondea hacia arriba solo si es impar
+                end
+              end
+            end 
+          end
 
       1: begin
                    
