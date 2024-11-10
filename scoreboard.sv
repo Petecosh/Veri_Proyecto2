@@ -76,7 +76,7 @@ class scoreboard extends uvm_scoreboard;
       end
 
       default: begin
-          `uvm_fatal("SCBD",$sformatf("Modo de redondeo invalido"), UVM_HIGH);
+          `uvm_fatal("SCBD","Modo de redondeo invalido")
       end
     
     endcase
