@@ -16,6 +16,9 @@ class scoreboard extends uvm_scoreboard;
   bit [30:0] sc_underflow;
   bit [30:0] NaN;
 
+  bit [26:0] frc_Z_norm; 
+  bit sticky_bit;
+
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;
 
   virtual function void build_phase(uvm_phase phase);
@@ -37,12 +40,20 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
 
-    if (frac_sc[47]) begin
-        //frac_sc = frac_sc >> 1;
-        exp_sc = exp_sc + 1;
+    // Mux normalizer
+    if (!(frac_sc[47])) begin
+        frac_sc = {frac[46:0], 0}
+        //exp_sc = exp_sc + 1;
     end
 
-    sc_result = {sign_sc, exp_sc, frac_sc[45:23]};
+    // OR Logic
+    if (frac_sc[21:0] == 0) begin
+        sticky_bit = 1;
+    end else begin
+        sticky_bit = 0;
+    end
+
+    frc_Z_norm = {frac_sc[47:22], sticky_bit};
 
     `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
@@ -59,19 +70,19 @@ class scoreboard extends uvm_scoreboard;
 
       2: begin
         if (item_sc.fp_Z[31]) begin
-            sc_result = sc_result + 1'b1;
+            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
         end
       end
 
       3: begin
         if (!(item_sc.fp_Z[31])) begin
-            sc_result = sc_result + 1'b1;
+            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
         end
       end
 
       4: begin
-        if (item_sc.fp_Z[0]) begin
-            sc_result = sc_result + 1'b1;
+        if (frc_Z_norm[2]) begin
+            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
         end
       end
 
@@ -80,6 +91,8 @@ class scoreboard extends uvm_scoreboard;
       end
     
     endcase
+
+    sc_result = {sign_sc, exp_sc, frc_Z_norm[26:3]};
     
     if(item_sc.fp_Z != sc_result) begin
 
