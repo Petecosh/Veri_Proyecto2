@@ -19,8 +19,7 @@ class monitor extends uvm_monitor;
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
-      @(vif.clk);
-        if (1) begin
+      @(vif.clk) begin
           item_seq item_monitor = item_seq::type_id::create("item_monitor");
           item_monitor.fp_X = vif.fp_X;
           item_monitor.fp_Y = vif.fp_Y;
