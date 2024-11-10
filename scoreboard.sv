@@ -46,6 +46,40 @@ class scoreboard extends uvm_scoreboard;
 
     `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
+
+    case (item_sc.r_mode)
+
+      3'b000: begin
+          
+      end
+
+      3'b001: begin
+            
+      end
+
+      3'b010: begin
+        if (item_sc.fp_Z[31]) begin
+            sc_result = sc_result + 1;
+        end
+      end
+
+      3'b011: begin
+        if (!(item_sc.fp_Z[31])) begin
+            sc_result = sc_result + 1;
+        end
+      end
+
+      3'b100: begin
+        if (item_sc.fp_Z[0]) begin
+            sc_result = sc_result + 1;
+        end
+      end
+
+      default: begin
+          `uvm_fatal("SCBD",$sformatf("Modo de redondeo invalido"), UVM_HIGH);
+      end
+    
+    endcase
     
     if(item_sc.fp_Z != sc_result) begin
 
