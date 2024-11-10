@@ -99,7 +99,7 @@ class scoreboard extends uvm_scoreboard;
 
     
 
-    sc_result = {sign_sc, exp_sc, frc_Z_norm[26:4]};
+    sc_result = {sign_sc, exp_sc, frc_Z_norm[24:2]};
     
     if(item_sc.fp_Z != sc_result) begin
 
