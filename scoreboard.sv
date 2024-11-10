@@ -77,21 +77,21 @@ class scoreboard extends uvm_scoreboard;
 
       2: begin
         if (item_sc.fp_Z[31]) begin
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
+            frc_Z_norm[24:1] = frc_Z_norm[24:1] + 1'b1;
         end
         
       end
 
       3: begin
         if (!(item_sc.fp_Z[31])) begin
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
+            frc_Z_norm[24:1] = frc_Z_norm[24:1] + 1'b1;
         end
         
       end
 
       4: begin
         if (frc_Z_norm[2]) begin
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
+            frc_Z_norm[24:1] = frc_Z_norm[24:1] + 1'b1;
           end 
       end
 
