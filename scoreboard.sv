@@ -46,8 +46,10 @@ class scoreboard extends uvm_scoreboard;
       frac_sc = frac_sc >> 1;
       exp_sc = exp_sc + 1;
     end else begin
+      $display(frac_sc);
       // El resultado ya está normalizado en la forma 0.xxxx, mantén el valor tal cual
-      frac_sc = {frac_sc[46:1],0};  // Selecciona los bits 23 más significativos
+      frac_sc = frac_sc[46:1];  // Selecciona los bits 23 más significativos
+      $display(frac_sc);
     end
 
     // OR Logic
