@@ -60,16 +60,26 @@ class scoreboard extends uvm_scoreboard;
     case (item_sc.r_mode)
 
       0: begin
-          
+        if (frc_Z_norm[26]) begin
+          //frc_Z_norm = frc_Z_norm >> 1;
+          exp_sc = exp_sc + 1;
+        end 
       end
 
       1: begin
-            
+        if (frc_Z_norm[26]) begin
+          //frc_Z_norm = frc_Z_norm >> 1;
+          exp_sc = exp_sc + 1;
+        end            
       end
 
       2: begin
         if (item_sc.fp_Z[31]) begin
             frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
+        end
+        if (frc_Z_norm[26]) begin
+          //frc_Z_norm = frc_Z_norm >> 1;
+          exp_sc = exp_sc + 1;
         end
       end
 
@@ -77,11 +87,19 @@ class scoreboard extends uvm_scoreboard;
         if (!(item_sc.fp_Z[31])) begin
             frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
         end
+        if (frc_Z_norm[26]) begin
+          //frc_Z_norm = frc_Z_norm >> 1;
+          exp_sc = exp_sc + 1;
+        end
       end
 
       4: begin
         if (frc_Z_norm[2]) begin
             frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
+            if (frc_Z_norm[26]) begin
+            //frc_Z_norm = frc_Z_norm >> 1;
+            exp_sc = exp_sc + 1;
+            end
             frc_Z_norm[26:3] = {0, frc_Z_norm[24:1]};
         end
       end
@@ -92,10 +110,7 @@ class scoreboard extends uvm_scoreboard;
     
     endcase
 
-    if (frc_Z_norm[26]) begin
-          //frc_Z_norm = frc_Z_norm >> 1;
-          exp_sc = exp_sc + 1;
-    end
+    
 
     sc_result = {sign_sc, exp_sc, frc_Z_norm[25:3]};
     
