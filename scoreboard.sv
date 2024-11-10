@@ -40,10 +40,14 @@ class scoreboard extends uvm_scoreboard;
 
     frac_sc = frac_X * frac_Y;
 
-    // Mux normalizer
-    //if (frac_sc[47] == false) begin
-    //    frac_sc = {frac_sc[46:0], 1'b0};
-    //end 
+    if (frac_sc[47] == 1) begin
+      // El resultado está en la forma 1.xxxx, así que desplaza uno a la derecha
+      frac_sc = frac_sc >> 1;
+      exp_sc = exp_sc + 1;
+    end else begin
+      // El resultado ya está normalizado en la forma 0.xxxx, mantén el valor tal cual
+      frac_sc = frac_sc[46:23];  // Selecciona los bits 23 más significativos
+    end
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
@@ -60,52 +64,31 @@ class scoreboard extends uvm_scoreboard;
     case (item_sc.r_mode)
 
       0: begin
-        if (frc_Z_norm[26]) begin
-          //frc_Z_norm = frc_Z_norm >> 1;
-          exp_sc = exp_sc + 1;
-        end 
+         
       end
 
       1: begin
-        if (frc_Z_norm[26]) begin
-          //frc_Z_norm = frc_Z_norm >> 1;
-          exp_sc = exp_sc + 1;
-        end            
+                   
       end
 
       2: begin
         if (item_sc.fp_Z[31]) begin
-            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
+            frc_Z_norm[26:4] = frc_Z_norm[26:4] + 1'b1;
         end
-        if (frc_Z_norm[26]) begin
-          //frc_Z_norm = frc_Z_norm >> 1;
-          exp_sc = exp_sc + 1;
-        end
+        
       end
 
       3: begin
         if (!(item_sc.fp_Z[31])) begin
-            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
+            frc_Z_norm[26:4] = frc_Z_norm[26:4] + 1'b1;
         end
-        if (frc_Z_norm[26]) begin
-          //frc_Z_norm = frc_Z_norm >> 1;
-          exp_sc = exp_sc + 1;
-        end
+        
       end
 
       4: begin
-        //
-        frc_Z_norm[26:3] = {0, frc_Z_norm[25:2]};
         if (frc_Z_norm[2]) begin
-            
-            frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
-            if (frc_Z_norm[26]) begin
-            //frc_Z_norm = frc_Z_norm >> 1;
-            exp_sc = exp_sc + 1;
-            end
-            
+            frc_Z_norm[26:4] = frc_Z_norm[26:4] + 1'b1;
           end 
-          //frc_Z_norm[26:3] = frc_Z_norm[26:3] + 1'b1;
       end
 
       default: begin
@@ -116,7 +99,7 @@ class scoreboard extends uvm_scoreboard;
 
     
 
-    sc_result = {sign_sc, exp_sc, frc_Z_norm[25:3]};
+    sc_result = {sign_sc, exp_sc, frc_Z_norm[26:4]};
     
     if(item_sc.fp_Z != sc_result) begin
 
