@@ -41,9 +41,9 @@ class scoreboard extends uvm_scoreboard;
     frac_sc = frac_X * frac_Y;
 
     // Mux normalizer
-    if (!(frac_sc[47])) begin
-        frac_sc = {frac_sc[46:0], 0};
-    end 
+    //if (frac_sc[47] == false) begin
+    //    frac_sc = {frac_sc[46:0], 1'b0};
+    //end 
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
