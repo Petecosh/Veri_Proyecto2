@@ -42,7 +42,7 @@ class scoreboard extends uvm_scoreboard;
 
     // Mux normalizer
     if (!(frac_sc[47])) begin
-        frac_sc = {frac[46:0], 0};
+        frac_sc = {frac_sc[46:0], 0};
     end 
 
     // OR Logic
