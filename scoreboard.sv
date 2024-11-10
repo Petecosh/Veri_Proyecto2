@@ -100,9 +100,9 @@ class scoreboard extends uvm_scoreboard;
             //frc_Z_norm = frc_Z_norm >> 1;
             exp_sc = exp_sc + 1;
             end
-            
+            frc_Z_norm[26:3] = {0, frc_Z_norm[24:1]};
+          else frc_Z_norm[26:3] = {0, frc_Z_norm[25:2]};
         end
-        frc_Z_norm[26:3] = {0, frc_Z_norm[24:1]};
       end
 
       default: begin
