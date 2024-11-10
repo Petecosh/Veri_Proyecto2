@@ -77,7 +77,7 @@ class scoreboard extends uvm_scoreboard;
 
       2: begin
         if (item_sc.fp_Z[31]) begin
-            $display("suma")
+            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
         
@@ -85,7 +85,7 @@ class scoreboard extends uvm_scoreboard;
 
       3: begin
         if (!(item_sc.fp_Z[31])) begin
-            $display("suma")
+            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
         
@@ -93,7 +93,7 @@ class scoreboard extends uvm_scoreboard;
 
       4: begin
         if (frc_Z_norm[2]) begin
-            $display("suma")
+            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
           end 
       end
