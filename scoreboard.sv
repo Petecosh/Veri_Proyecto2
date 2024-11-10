@@ -68,7 +68,16 @@ class scoreboard extends uvm_scoreboard;
     case (item_sc.r_mode)
 
       0: begin
-         
+        if (frc_Z_norm[1]) begin
+            $display("suma");
+            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
+          end 
+         /*if (frc_Z_norm[1]) begin
+            if (frc_Z_norm[0]) begin
+              $display("suma");
+              frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
+            end
+          end */
       end
 
       1: begin
