@@ -54,7 +54,7 @@ class scoreboard extends uvm_scoreboard;
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        //$display("sticky_bit 0" );
+        $display("sticky_bit 0" );
         sticky_bit = 0;
     end else begin
         sticky_bit = 1;
@@ -76,7 +76,7 @@ class scoreboard extends uvm_scoreboard;
       end
 
       2: begin
-        if (item_sc.fp_Z[31]) begin
+        if (sign_sc) begin
             $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
@@ -84,7 +84,7 @@ class scoreboard extends uvm_scoreboard;
       end
 
       3: begin
-        if (!(item_sc.fp_Z[31])) begin
+        if (!(sign_sc)) begin
             $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
@@ -92,7 +92,7 @@ class scoreboard extends uvm_scoreboard;
       end
 
       4: begin
-        if (frc_Z_norm[2]) begin
+        if (frc_Z_norm[1]) begin
             $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
           end 
