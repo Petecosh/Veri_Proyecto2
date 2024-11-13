@@ -41,26 +41,21 @@ class scoreboard extends uvm_scoreboard;
     frac_sc = frac_X * frac_Y;
 
     if (frac_sc[47] == 1) begin
-      // El resultado está en la forma 1.xxxx, así que desplaza uno a la derecha
-      //$display("se corrio");
       frac_sc = frac_sc >> 1;
       exp_sc = exp_sc + 1;
     end else begin
-      //$display("%b",frac_sc);
-      // El resultado ya está normalizado en la forma 0.xxxx, mantén el valor tal cual
-      frac_sc = {frac_sc[46:1],1'b0};  // Selecciona los bits 23 más significativos
-      //$display("%b",frac_sc);
+      frac_sc = {frac_sc[46:1], 1'b0};
     end
 
     // OR Logic
     if (frac_sc[21:0] == 0) begin
-        $display("what que jeta sticky_bit 0" );
+        $display("Sticky 0");
         sticky_bit = 0;
     end else begin
         sticky_bit = 1;
     end
 
-    frc_Z_norm = {frac_sc[47:22], (frac_sc[23]^sticky_bit)};
+    frc_Z_norm = {frac_sc[47:22], (frac_sc[23] | sticky_bit)};
 
     `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
@@ -68,52 +63,37 @@ class scoreboard extends uvm_scoreboard;
     case (item_sc.r_mode)
 
       0: begin
-        /*if (frc_Z_norm[1]) begin
-            $display("suma");
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
-          end 
-          */
           if (frc_Z_norm[1]) begin
             if (frc_Z_norm[0]) begin
-              $display("suma");
               frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
             end else begin
-              if (frc_Z_norm[0] || frc_Z_norm[1]) begin
-                frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;  // Redondea hacia arriba
-              end else begin
-              // En el caso de empate exacto, redondea al número par más cercano
                 if (frc_Z_norm[2] == 1'b1) begin
                   frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;  // Redondea hacia arriba solo si es impar
                 end
-              end
-            end 
-          end
+            end
+          end 
       end
+
       1: begin
                    
       end
 
       2: begin
         if (sign_sc) begin
-            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
-        
       end
 
       3: begin
         if (!(sign_sc)) begin
-            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
         end
-        
       end
 
       4: begin
         if (frc_Z_norm[1]) begin
-            $display("suma");
             frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;
-          end 
+        end
       end
 
       default: begin
