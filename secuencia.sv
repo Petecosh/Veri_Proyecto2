@@ -15,6 +15,7 @@ class gen_secuencia extends uvm_sequence;
       item_seq item = item_seq::type_id::create("item");
       start_item(item);
       item.randomize();
+      item.fp_X[30:23] = 8'h00; 
       `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       finish_item(item);
     end
