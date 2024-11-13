@@ -8,14 +8,13 @@ class gen_secuencia extends uvm_sequence;
 
   rand int cantidad_item;
 
-  constraint const_cantidad {10 < cantidad_item < 50;}
+  constraint const_cantidad {250 < cantidad_item < 500;}
 
   virtual task body();
     for (int i = 0; i < cantidad_item; i++) begin
       item_seq item = item_seq::type_id::create("item");
       start_item(item);
       item.randomize();
-      item.fp_X[30:23] = 8'h00; 
       `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       finish_item(item);
     end
