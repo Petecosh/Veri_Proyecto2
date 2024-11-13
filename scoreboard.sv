@@ -113,7 +113,7 @@ class scoreboard extends uvm_scoreboard;
               $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], NaN);
               $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], NaN);
           end else begin
-              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], sc_overflow), UVM_HIGH);
+              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
           end
 
 
