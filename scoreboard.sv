@@ -124,7 +124,7 @@ class scoreboard extends uvm_scoreboard;
           almacen_DUT.push_back(item_sc);
         end else if (item_sc.fp_Z[30:0] == NaN) begin
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
-          result_aux = {sign_sc, NaN};
+          result_aux = {0, NaN};
           almacen_sc.push_back(result_aux);
           almacen_DUT.push_back(item_sc);
         end else begin

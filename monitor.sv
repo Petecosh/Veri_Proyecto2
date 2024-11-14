@@ -2,6 +2,10 @@ class monitor extends uvm_monitor;
 
   `uvm_component_utils(monitor)    // Registrar en la fabrica
 
+  inf = 31'b11111111_00000000000000000000000;             // Valor especial infinito
+  zero = 31'b00000000_00000000000000000000000;            // Valor especial cero
+  NaN = 31'b11111111_10000000000000000000000;             // Valor especial NaN
+
   // Funcion constructora
   function new(string name = "monitor", uvm_component parent = null);
     super.new(name, parent);
@@ -19,6 +23,30 @@ class monitor extends uvm_monitor;
     mon_analysis_port = new("mon_analysis_port", this);
   endfunction
 
+  property exp_unos;
+    if (item_monitor.fp_X[30:23] == 8'hff || item_monitor.fp_Y[30:23] == 8'hff) begin
+      item_monitor.fp_Z[30:0] == (NaN || inf);
+    end 
+  endproperty
+
+  property exp_cero;
+    if (item_monitor.fp_X[30:23] == 8'h00 || item_monitor.fp_Y[30:23] == 8'h00) begin
+      item_monitor.fp_Z[30:0] == zero;
+    end 
+  endproperty
+
+  property prop_overflow;
+    if (item_monitor.ovrf) begin
+      item_monitor.fp_Z[30:0] == inf;
+    end 
+  endproperty
+
+  property prop_underflow;
+    if (item_monitor.udrf) begin
+      item_monitor.fp_Z[30:0] == zero;
+    end 
+  endproperty
+
   // Funcion de fase Run, se leen los datos de la interfaz
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
@@ -31,6 +59,10 @@ class monitor extends uvm_monitor;
           item_monitor.r_mode = vif.r_mode;
           item_monitor.ovrf = vif.ovrf;
           item_monitor.udrf = vif.udrf;
+          assert property(exp_unos) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
+          assert property(exp_cero) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
+          assert property(prop_overflow) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
+          assert property(prop_underflow) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
           mon_analysis_port.write(item_monitor);
           `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
       end
