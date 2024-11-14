@@ -33,13 +33,20 @@ class scoreboard extends uvm_scoreboard;
     NaN = 31'b11111111_10000000000000000000000;
 
     sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
+    if (item_sc.fp_Y[30:23] == 8'b0) begin
+    end
     exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111;
 
     frac_X = {1'b1, item_sc.fp_X[22:0]};
     frac_Y = {1'b1, item_sc.fp_Y[22:0]};
 
     frac_sc = frac_X * frac_Y;
+    exp_sc = (is_subnormal_X ? 8'd1 : item_sc.fp_X[30:23]) + 
+         (is_subnormal_Y ? 8'd1 : item_sc.fp_Y[30:23]) - 8'b0111_1111;
 
+// Ajusta la mantissa con el bit implícito solo si el número no es subnormal
+    frac_X = is_subnormal_X ? {1'b0, item_sc.fp_X[22:0]} : {1'b1, item_sc.fp_X[22:0]};
+    frac_Y = is_subnormal_Y ? {1'b0, item_sc.fp_Y[22:0]} : {1'b1, item_sc.fp_Y[22:0]};
     if (frac_sc[47] == 1) begin
       frac_sc = frac_sc >> 1;
       exp_sc[7:0] = exp_sc[7:0] + 1;
@@ -117,7 +124,7 @@ class scoreboard extends uvm_scoreboard;
         end
       end
       
-      /*else if (item_sc.fp_X[30:23] == 8'h00 || item_sc.fp_Y[30:23] == 8'h00) begin
+      else if (item_sc.fp_X[30:23] == 8'h00 || item_sc.fp_Y[30:23] == 8'h00) begin
         if (item_sc.fp_Z[30:0] != zero) begin
             `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, zero))
             $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -126,7 +133,7 @@ class scoreboard extends uvm_scoreboard;
         end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           end
-        end */
+        end 
       else if (item_sc.fp_X[30:23] == 8'hff || item_sc.fp_Y[30:23] == 8'hff) begin
         if (item_sc.fp_Z[30:0] != NaN) begin
             `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
