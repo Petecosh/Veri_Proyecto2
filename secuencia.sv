@@ -7,22 +7,17 @@ class gen_secuencia extends uvm_sequence;
   endfunction
 
   rand int cantidad_item;
-  rand int delay;
 
   constraint const_cantidad {250 < cantidad_item < 500;}
-  constraint const_delay {1 < delay < 10;}
+
 
   virtual task body();
     for (int i = 0; i < cantidad_item; i++) begin
-      
       item_seq item = item_seq::type_id::create("item");
       start_item(item);
       item.randomize();
       `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       finish_item(item);
-      randomize(delay);
-      $display("delay = %d", delay);
-      #(10*delay);
     end
     `uvm_info("SEQ", $sformatf("Completada generacion de %0d items", cantidad_item), UVM_LOW);
   endtask
