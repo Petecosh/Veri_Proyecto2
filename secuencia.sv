@@ -15,10 +15,7 @@ class gen_secuencia extends uvm_sequence;
   virtual task body();
     for (int i = 0; i < cantidad_item; i++) begin
       randomize(delay);
-      while (delay > 0) begin
-        delay = delay -1
-        #10
-      end 
+      #(10*delay);
       item_seq item = item_seq::type_id::create("item");
       start_item(item);
       item.randomize();
