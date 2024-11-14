@@ -16,7 +16,7 @@ class gen_secuencia extends uvm_sequence;
     for (int i = 0; i < cantidad_item; i++) begin
       delay.randomize();
       $display("delay = %d",delay);
-      while (delay > 0) begin
+      while (delay < 1) begin
         delay = delay - 1;
         #10;
       end 
