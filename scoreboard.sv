@@ -12,8 +12,8 @@ class scoreboard extends uvm_scoreboard;
   bit [23:0] frac_Y;
   bit [47:0] frac_sc;
   bit [31:0] sc_result;
-  bit [30:0] sc_overflow;
-  bit [30:0] sc_underflow;
+  bit [30:0] inf;
+  bit [30:0] zero;
   bit [30:0] NaN;
 
   bit [26:0] frc_Z_norm; 
@@ -28,8 +28,8 @@ class scoreboard extends uvm_scoreboard;
 
   virtual function write(item_seq item_sc);  
 
-    sc_overflow = 31'b11111111_00000000000000000000000;
-    sc_underflow = 31'b00000000_00000000000000000000000;
+    inf = 31'b11111111_00000000000000000000000;
+    zero = 31'b00000000_00000000000000000000000;
     NaN = 31'b11111111_10000000000000000000000;
 
     sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];
@@ -106,7 +106,7 @@ class scoreboard extends uvm_scoreboard;
     
     if(item_sc.fp_Z != sc_result) begin
 
-      if (item_sc.fp_X[30:23] == 8'hff || item_sc.fp_Y[30:23] == 8'hff) begin
+      if (item_sc.fp_X[30:0] == NaN || item_sc.fp_Y[30:0] == NaN) begin
           if (item_sc.fp_Z[30:0] != NaN) begin
               `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
               $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -116,30 +116,50 @@ class scoreboard extends uvm_scoreboard;
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
           end
 
+      end else if (item_sc.fp_X[30:0] == inf || item_sc.fp_Y[30:0] == inf) begin
+          if (item_sc.fp_Z[30:0] != inf) begin
+              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, inf))
+              $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
+              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], inf[30:23]);
+              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], inf[22:0]);
+          end else begin
+              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
+          end
+      
+      end else if (item_sc.fp_X[30:0] == zero || item_sc.fp_Y[30:0] == zero) begin
+          if (item_sc.fp_Z[30:0] != zero) begin
+              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, zero))
+              $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
+              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], zero[30:23]);
+              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], zero[22:0]);
+          end else begin
+              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
+          end
+
 
       end else if (item_sc.ovrf) begin
 
         if (exp_sc > 254) begin
-          if (item_sc.fp_Z[30:0] != sc_overflow) begin
-              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_overflow))
+          if (item_sc.fp_Z[30:0] != inf) begin
+              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, inf))
               $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
-              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], sc_overflow[30:23]);
-              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], sc_overflow[22:0]);
+              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], inf[30:23]);
+              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], inf[22:0]);
           end else begin
-              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], sc_overflow), UVM_HIGH);
+              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
           end
         end
         
       end else if (item_sc.udrf) begin
 
         if ((item_sc.fp_X[30:23] + item_sc.fp_Y[30:23]) <= 127) begin
-          if (item_sc.fp_Z[30:0] != sc_underflow) begin
-              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_underflow))
+          if (item_sc.fp_Z[30:0] != zero) begin
+              `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, zero))
               $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
-              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], sc_underflow[30:23]);
-              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], sc_underflow[22:0]);
+              $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], zero[30:23]);
+              $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], zero[22:0]);
           end else begin
-              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], sc_underflow), UVM_HIGH);
+              `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           end
         end
 
