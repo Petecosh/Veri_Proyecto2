@@ -20,7 +20,7 @@ class gen_secuencia extends uvm_sequence;
       start_item(item);
       item.randomize();
       `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
-      $display("Cantidad de items generados: %0d", cantidad_item)
+      $display("Cantidad de items generados: %0d", cantidad_item);
       finish_item(item);
     end
     `uvm_info("SEQ", $sformatf("Completada generacion de %0d items", cantidad_item), UVM_LOW);
