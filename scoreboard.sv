@@ -41,12 +41,7 @@ class scoreboard extends uvm_scoreboard;
     frac_Y = {1'b1, item_sc.fp_Y[22:0]};
 
     frac_sc = frac_X * frac_Y;
-    exp_sc = (is_subnormal_X ? 8'd1 : item_sc.fp_X[30:23]) + 
-         (is_subnormal_Y ? 8'd1 : item_sc.fp_Y[30:23]) - 8'b0111_1111;
 
-// Ajusta la mantissa con el bit implícito solo si el número no es subnormal
-    frac_X = is_subnormal_X ? {1'b0, item_sc.fp_X[22:0]} : {1'b1, item_sc.fp_X[22:0]};
-    frac_Y = is_subnormal_Y ? {1'b0, item_sc.fp_Y[22:0]} : {1'b1, item_sc.fp_Y[22:0]};
     if (frac_sc[47] == 1) begin
       frac_sc = frac_sc >> 1;
       exp_sc[7:0] = exp_sc[7:0] + 1;
