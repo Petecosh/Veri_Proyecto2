@@ -18,4 +18,10 @@ class item_seq extends uvm_sequence_item;
   endfunction
 
   constraint const_redondeo {r_mode <= 4;}
+
+  constraint const_dist {fp_Y[30:0] dist {31'b00000000_00000000000000000000000 := 10, 
+                                          31'b11111111_00000000000000000000000 := 10,
+                                          31'b11111111_10000000000000000000000 := 10,
+                                          [31'b0:31'b1111111111111111111111111111111] :/ 70};}
+
 endclass
