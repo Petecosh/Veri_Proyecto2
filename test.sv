@@ -1,15 +1,20 @@
 class base_test extends uvm_test;
 
-  `uvm_component_utils(base_test)
+  `uvm_component_utils(base_test)  // Registrar en la fabrica
   
+  // Funcion constructora
   function new(string name = "base_test", uvm_component parent = null);
     super.new(name,parent);
   endfunction
   
-  ambiente ambiente_inst;
-  gen_secuencia  secuencia;
-  virtual interfaz vif;
+  ambiente ambiente_inst;    // Instancia del ambiente
+  gen_secuencia  secuencia;  // Instancia de la secuencia
+  virtual interfaz vif;      // Interfaz del DUT
 
+  // Funcion de fase Build
+  // Se crea el agente
+  // Si no se encontro la interfaz, se cae la simulacion
+  // Se crea la secuencia y se randomiza
   virtual function void build_phase(uvm_phase phase);
 
     super.build_phase(phase);
@@ -25,6 +30,8 @@ class base_test extends uvm_test;
 
   endfunction
 
+
+  // Funcion de fase Run
   virtual task run_phase(uvm_phase phase);
     phase.raise_objection(this);
     //apply_reset();
