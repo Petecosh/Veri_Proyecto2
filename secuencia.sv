@@ -18,7 +18,7 @@ class gen_secuencia extends uvm_sequence;
       $display("delay = %d",delay);
       while (delay > 0) begin
         delay = delay - 1;
-        #10
+        #10;
       end 
       item_seq item = item_seq::type_id::create("item");
       start_item(item);
