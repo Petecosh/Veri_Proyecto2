@@ -11,7 +11,7 @@ class gen_secuencia extends uvm_sequence;
   rand int cantidad_item;
 
   // Constriant para randomizar cantidad de sequence items
-  constraint const_cantidad {cantidad_item < 10;}
+  constraint const_cantidad {cantidad_item < 20;}
 
   // Ciclo for para randomizar una determinada cantidad de sequence items
   virtual task body();
