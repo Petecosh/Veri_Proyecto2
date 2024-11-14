@@ -211,7 +211,7 @@ class scoreboard extends uvm_scoreboard;
   virtual function void final_phase(uvm_phase phase);
     super.final_phase(phase);
     
-    int file
+    int file;
     file = $fopen("output.csv", "w"); // Abrir un archivo CSV en escritura
     
     $fdisplay(file, "fp_X,fp_Y,fp_Z,Esperado,Redondeo,Overflow,Underflow");
