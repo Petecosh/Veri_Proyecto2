@@ -23,6 +23,7 @@ class scoreboard extends uvm_scoreboard;
   bit [31:0] result_aux;    // Variable auxiliar para guardar en almacen_sc
   item_seq almacen_DUT[$];  // Array para guardar lo que sale del DUT en un CSV
   bit [31:0] almacen_sc[$]; // Array para guardar lo que calculo el scoreboard en un CSV
+  int file;
 
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;  // Puerto de analisis
 
@@ -211,7 +212,6 @@ class scoreboard extends uvm_scoreboard;
   virtual function void final_phase(uvm_phase phase);
     super.final_phase(phase);
     
-    int file;
     file = $fopen("output.csv", "w"); // Abrir un archivo CSV en escritura
     
     $fdisplay(file, "fp_X,fp_Y,fp_Z,Esperado,Redondeo,Overflow,Underflow");
