@@ -20,8 +20,9 @@ class scoreboard extends uvm_scoreboard;
   bit [26:0] frc_Z_norm;   // Fraccion de resultado Z normalizado
   bit sticky_bit;          // Sticky bit
 
-  bit [31:0] result_aux;   // Resultado auxiliar para guardar en un array
-  bit [31:0] almacen[$];   // Array para guardar en un CSV
+  bit [31:0] result_aux;    // Variable auxiliar para guardar en almacen_sc
+  item_seq almacen_DUT[$];  // Array para guardar lo que sale del DUT en un CSV
+  bit [31:0] almacen_sc[$]; // Array para guardar lo que calculo el scoreboard en un CSV
 
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;  // Puerto de analisis
 
@@ -109,8 +110,7 @@ class scoreboard extends uvm_scoreboard;
     sc_result = {sign_sc, exp_sc[7:0], frc_Z_norm[24:2]};      // Concatenar el signo, exponente y fraccion calculados
     
     if(item_sc.fp_Z != sc_result) begin                        // Si el resultado del DUT y del scoreboard son diferentes...
-
-
+    
       // Si el exponente de algun multiplicando es 1111_1111...
       // Puede ser un infinito...
       // Puede ser un NaN...
@@ -119,11 +119,13 @@ class scoreboard extends uvm_scoreboard;
         if (item_sc.fp_Z[30:0] == inf) begin               
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           result_aux = {sign_sc, inf};
-          almacen.push_back(result_aux);
+          almacen_sc.push_back(result_aux);
+          almacen_DUT.push_back(item_sc);
         end else if (item_sc.fp_Z[30:0] == NaN) begin
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           result_aux = {sign_sc, NaN};
-          almacen.push_back(result_aux);
+          almacen_sc.push_back(result_aux);
+          almacen_DUT.push_back(item_sc);
         end else begin
           `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
           $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -143,7 +145,8 @@ class scoreboard extends uvm_scoreboard;
         end else begin
             `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
             result_aux = {sign_sc, zero};
-            almacen.push_back(result_aux);
+            almacen_sc.push_back(result_aux);
+            almacen_DUT.push_back(item_sc);
         end
       end
 
@@ -160,7 +163,8 @@ class scoreboard extends uvm_scoreboard;
           end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
               result_aux = {sign_sc, inf};
-              almacen.push_back(result_aux);
+              almacen_sc.push_back(result_aux);
+              almacen_DUT.push_back(item_sc);
           end
         end
       end
@@ -178,7 +182,8 @@ class scoreboard extends uvm_scoreboard;
           end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
               result_aux = {sign_sc, zero};
-              almacen.push_back(result_aux);
+              almacen_sc.push_back(result_aux);
+              almacen_DUT.push_back(item_sc);
           end
         end
       end
@@ -196,9 +201,37 @@ class scoreboard extends uvm_scoreboard;
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_result), UVM_HIGH)
       result_aux = sc_result;
-      almacen.push_back(result_aux);
+      almacen_sc.push_back(result_aux);
+      almacen_DUT.push_back(item_sc);
     end
 
+  endfunction
+
+  // Funcion de fase Final, se crea el archivo CSV
+  virtual function void final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    
+    int file
+    file = $fopen("output.csv", "w"); // Abrir un archivo CSV en escritura
+    
+    $fdisplay(file, "fp_X,fp_Y,fp_Z,Esperado,Redondeo,Overflow,Underflow");
+
+    if (file) begin                   // Si el archivo esta listo para escribirse...                        
+      // Recorrer el array de resultados obtenidos y guardar cada elemento en el archivo CSV
+      foreach (almacen_DUT[i]) begin
+        $fdisplay(file, "%h,%h,%h,%h,%0d,%b,%b", almacen_DUT[i].fp_X, 
+                                        almacen_DUT[i].fp_Y, 
+                                        almacen_DUT[i].fp_Z, 
+                                        almacen_sc[i], 
+                                        almacen_DUT[i].r_mode,
+                                        almacen_DUT[i].ovrf,
+                                        almacen_DUT[i].udrf);
+      end                      
+      $fclose(file);                  // Cerrar el archivo CSV
+    end else begin
+      $display("Error CSV: No se pudo abrir el archivo para escribir");
+    end
+    
   endfunction
 
 endclass
