@@ -23,13 +23,43 @@ class monitor extends uvm_monitor;
     mon_analysis_port = new("mon_analysis_port", this);
   endfunction
 
-  
+  property exp_unos;
+    @(posedge vif.clk) begin
+      if (item_monitor.fp_X[30:23] == 8'hff || item_monitor.fp_Y[30:23] == 8'hff) begin
+        item_monitor.fp_Z[30:0] == (NaN || inf);
+      end 
+    end
+  endproperty
+
+  property exp_cero;
+    @(posedge vif.clk) begin
+      if (item_monitor.fp_X[30:23] == 8'h00 || item_monitor.fp_Y[30:23] == 8'h00) begin
+        item_monitor.fp_Z[30:0] == zero;
+      end
+    end 
+  endproperty
+
+  property prop_overflow;
+    @(posedge vif.clk) begin
+      if (item_monitor.ovrf) begin
+        item_monitor.fp_Z[30:0] == inf;
+      end 
+    end
+  endproperty
+
+  property prop_underflow;
+    @(posedge vif.clk) begin
+      if (item_monitor.udrf) begin
+        item_monitor.fp_Z[30:0] == zero;
+      end 
+    end
+  endproperty
 
   // Funcion de fase Run, se leen los datos de la interfaz
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
-      @(vif.clk) begin  
+      @(vif.clk) begin
           item_seq item_monitor = item_seq::type_id::create("item_monitor");
           item_monitor.fp_X = vif.fp_X;
           item_monitor.fp_Y = vif.fp_Y;
@@ -37,36 +67,10 @@ class monitor extends uvm_monitor;
           item_monitor.r_mode = vif.r_mode;
           item_monitor.ovrf = vif.ovrf;
           item_monitor.udrf = vif.udrf;
-
-          property exp_unos;
-            if (item_monitor.fp_X[30:23] == 8'hff || item_monitor.fp_Y[30:23] == 8'hff) begin
-              item_monitor.fp_Z[30:0] == (NaN || inf);
-            end 
-          endproperty
-
-          property exp_cero;
-            if (item_monitor.fp_X[30:23] == 8'h00 || item_monitor.fp_Y[30:23] == 8'h00) begin
-              item_monitor.fp_Z[30:0] == zero;
-            end 
-          endproperty
-
-          property prop_overflow;
-            if (item_monitor.ovrf) begin
-              item_monitor.fp_Z[30:0] == inf;
-            end 
-          endproperty
-
-          property prop_underflow;
-            if (item_monitor.udrf) begin
-              item_monitor.fp_Z[30:0] == zero;
-            end 
-          endproperty
-          
           assert property(exp_unos) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
           assert property(exp_cero) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
           assert property(prop_overflow) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
           assert property(prop_underflow) else `uvm_error("MON", $sformatf("Propiedad Exp_Unos no cumplida %s", item_monitor.print()), UVM_HIGH);
-          
           mon_analysis_port.write(item_monitor);
           `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
       end
