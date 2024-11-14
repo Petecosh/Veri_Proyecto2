@@ -106,7 +106,7 @@ class scoreboard extends uvm_scoreboard;
     
     if(item_sc.fp_Z != sc_result) begin
 
-      if (item_sc.fp_X[30:23] == NaN[30:23] || item_sc.fp_Y[30:22] == NaN[30:23]) begin
+      if (item_sc.fp_X[30:23] == NaN[30:23] || item_sc.fp_Y[30:23] == NaN[30:23]) begin
           if (item_sc.fp_X[22:0] != 0 || item_sc.fp_Y[22:0] != 0) begin
             if (item_sc.fp_Z[30:0] != NaN) begin
                 `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
