@@ -2,9 +2,9 @@ class monitor extends uvm_monitor;
 
   `uvm_component_utils(monitor)    // Registrar en la fabrica
 
-  inf = 31'b11111111_00000000000000000000000;             // Valor especial infinito
-  zero = 31'b00000000_00000000000000000000000;            // Valor especial cero
-  NaN = 31'b11111111_10000000000000000000000;             // Valor especial NaN
+  bit [30:0] inf = 31'b11111111_00000000000000000000000;             // Valor especial infinito
+  bit [30:0] zero = 31'b00000000_00000000000000000000000;            // Valor especial cero
+  bit [30:0] NaN = 31'b11111111_10000000000000000000000;             // Valor especial NaN
 
   // Funcion constructora
   function new(string name = "monitor", uvm_component parent = null);
