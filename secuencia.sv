@@ -15,16 +15,18 @@ class gen_secuencia extends uvm_sequence;
   virtual task body();
     for (int i = 0; i < cantidad_item; i++) begin
       delay.randomize();
-      item_seq item = item_seq::type_id::create("item");
-      start_item(item);
-      item.randomize();
-      `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       $display("delay = %d",delay);
       while (delay > 0) begin
         delay = delay - 1;
         #10;
       end
+      begin
+      item_seq item = item_seq::type_id::create("item");
+      start_item(item);
+      item.randomize();
+      `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       finish_item(item);
+      end
     end
     `uvm_info("SEQ", $sformatf("Completada generacion de %0d items", cantidad_item), UVM_LOW);
   endtask
