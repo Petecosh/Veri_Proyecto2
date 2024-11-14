@@ -26,6 +26,7 @@ class base_test extends uvm_test;
     uvm_config_db#(virtual interfaz)::set(this, "ambiente_inst.agente_inst.*","vif",vif);
 
     secuencia = gen_secuencia::type_id::create("secuencia");
+    secuencia.set_max_count(10);
     secuencia.randomize();
 
   endfunction
@@ -35,7 +36,6 @@ class base_test extends uvm_test;
   virtual task run_phase(uvm_phase phase);
     phase.raise_objection(this);
     //apply_reset();
-    secuencia.set_max_count(10);
     secuencia.start(ambiente_inst.agente_inst.sequencer_inst);
     #200;
     phase.drop_objection(this);
