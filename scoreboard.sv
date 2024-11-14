@@ -107,16 +107,7 @@ class scoreboard extends uvm_scoreboard;
     if(item_sc.fp_Z != sc_result) begin
 
       if (item_sc.fp_X[30:23] == NaN[30:23] || item_sc.fp_Y[30:23] == NaN[30:23]) begin
-          if (item_sc.fp_X[22:0] != 0 || item_sc.fp_Y[22:0] != 0) begin
-            if (item_sc.fp_Z[30:0] != NaN) begin
-                `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
-                $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
-                $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], NaN[30:23]);
-                $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], NaN[22:0]);
-            end else begin
-                `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
-            end
-          end else begin
+          if (item_sc.fp_X[22:0] == 0 || item_sc.fp_Y[22:0] == 0) begin
             if (item_sc.fp_Z[30:0] != inf) begin
               `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, inf))
               $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -124,6 +115,15 @@ class scoreboard extends uvm_scoreboard;
               $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], inf[22:0]);
             end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
+            end
+          end else begin
+            if (item_sc.fp_Z[30:0] != NaN) begin
+                `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
+                $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
+                $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], NaN[30:23]);
+                $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], NaN[22:0]);
+            end else begin
+                `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
             end
           end 
       
