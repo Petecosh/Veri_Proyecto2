@@ -119,11 +119,11 @@ class scoreboard extends uvm_scoreboard;
         if (item_sc.fp_Z[30:0] == inf) begin               
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           result_aux = {sign_sc, inf};
-          almacen.pushback(result_aux);
+          almacen.push_back(result_aux);
         end else if (item_sc.fp_Z[30:0] == NaN) begin
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
           result_aux = {sign_sc, NaN};
-          almacen.pushback(result_aux);
+          almacen.push_back(result_aux);
         end else begin
           `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
           $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -143,7 +143,7 @@ class scoreboard extends uvm_scoreboard;
         end else begin
             `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
             result_aux = {sign_sc, zero};
-            almacen.pushback(result_aux);
+            almacen.push_back(result_aux);
         end
       end
 
@@ -160,7 +160,7 @@ class scoreboard extends uvm_scoreboard;
           end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
               result_aux = {sign_sc, inf};
-              almacen.pushback(result_aux);
+              almacen.push_back(result_aux);
           end
         end
       end
@@ -178,7 +178,7 @@ class scoreboard extends uvm_scoreboard;
           end else begin
               `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
               result_aux = {sign_sc, zero};
-              almacen.pushback(result_aux);
+              almacen.push_back(result_aux);
           end
         end
       end
@@ -196,7 +196,7 @@ class scoreboard extends uvm_scoreboard;
     end else begin
       `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, sc_result), UVM_HIGH)
       result_aux = sc_result;
-      almacen.pushback(result_aux);
+      almacen.push_back(result_aux);
     end
 
   endfunction
