@@ -21,7 +21,7 @@ class gen_secuencia extends uvm_sequence;
       `uvm_info("SEQ", $sformatf("Generado nuevo item: %s", item.print()), UVM_HIGH);
       finish_item(item);
       randomize(delay);
-      $display("delay = %d", delay)
+      $display("delay = %d", delay);
       #(10*delay);
     end
     `uvm_info("SEQ", $sformatf("Completada generacion de %0d items", cantidad_item), UVM_LOW);
