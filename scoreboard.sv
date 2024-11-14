@@ -106,7 +106,7 @@ class scoreboard extends uvm_scoreboard;
     
     if(item_sc.fp_Z != sc_result) begin
 
-      if (item_sc.fp_X[30:0] = inf  || item_sc.fp_Y[30:0] == inf) begin
+      if (item_sc.fp_X[30:0] == inf  || item_sc.fp_Y[30:0] == inf) begin
         if (item_sc.fp_Z[30:0] != inf) begin
           `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, inf))
           $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
