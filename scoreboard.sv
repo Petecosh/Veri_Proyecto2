@@ -106,8 +106,8 @@ class scoreboard extends uvm_scoreboard;
     
     if(item_sc.fp_Z != sc_result) begin
 
-      if (item_sc.fp_X[30:23] == NaN[30:23] || item_sc.fp_Y[30:23] == NaN[30:23]) begin
-          if (item_sc.fp_X[22:0] == 0 || item_sc.fp_Y[22:0] == 0) begin
+      if ((item_sc.fp_X[30:23] == NaN[30:23] & item_sc.fp_X[22:0] == 0)  || (item_sc.fp_Y[30:23] == NaN[30:23] & item_sc.fp_Y[22:0] == 0)) begin
+          
             if (item_sc.fp_Z[30:0] != inf) begin
               `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, inf))
               $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sc_result[31]);
@@ -125,7 +125,7 @@ class scoreboard extends uvm_scoreboard;
             end else begin
                 `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
             end
-          end 
+          
       
       end else if (item_sc.fp_X[30:0] == zero || item_sc.fp_Y[30:0] == zero) begin
           if (item_sc.fp_Z[30:0] != zero) begin
