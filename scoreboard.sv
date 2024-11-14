@@ -218,7 +218,14 @@ class scoreboard extends uvm_scoreboard;
 
     if (file) begin                   // Si el archivo esta listo para escribirse...                        
       // Recorrer el array de resultados obtenidos y guardar cada elemento en el archivo CSV
-      foreach (almacen_DUT[i]) begin
+      $fdisplay(file, "%h,%h,%h,%h,%0d,%b,%b", almacen_DUT[0].fp_X, 
+                                        almacen_DUT[0].fp_Y, 
+                                        almacen_DUT[0].fp_Z, 
+                                        almacen_sc[0], 
+                                        almacen_DUT[0].r_mode,
+                                        almacen_DUT[0].ovrf,
+                                        almacen_DUT[0].udrf);
+      for (int i = 1; i < almacen_DUT.size(); i++) begin
         if (!((almacen_DUT[i].fp_X == almacen_DUT[i-1].fp_X) || (almacen_DUT[i].fp_Y == almacen_DUT[i-1].fp_Y))) begin
         $fdisplay(file, "%h,%h,%h,%h,%0d,%b,%b", almacen_DUT[i].fp_X, 
                                         almacen_DUT[i].fp_Y, 
