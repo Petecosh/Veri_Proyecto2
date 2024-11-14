@@ -1,16 +1,19 @@
 class gen_secuencia extends uvm_sequence;
 
-  `uvm_object_utils(gen_secuencia);
+  `uvm_object_utils(gen_secuencia);  // Registrar en la fabrica
   
+  // Funcion constructora
   function new(string name = "gen_secuencia");
     super.new(name);
   endfunction
 
+  // Cantidad de sequence items
   rand int cantidad_item;
 
+  // Constriant para randomizar cantidad de sequence items
   constraint const_cantidad {250 < cantidad_item < 500;}
 
-
+  // Ciclo for para randomizar una determinada cantidad de sequence items
   virtual task body();
     for (int i = 0; i < cantidad_item; i++) begin
       item_seq item = item_seq::type_id::create("item");

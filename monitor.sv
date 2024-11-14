@@ -1,14 +1,17 @@
 class monitor extends uvm_monitor;
 
-  `uvm_component_utils(monitor)
+  `uvm_component_utils(monitor)    // Registrar en la fabrica
 
+  // Funcion constructora
   function new(string name = "monitor", uvm_component parent = null);
     super.new(name, parent);
   endfunction
 
-  uvm_analysis_port #(item_seq) mon_analysis_port;
-  virtual interfaz vif;
+  uvm_analysis_port #(item_seq) mon_analysis_port;  // Puerto de analisis
+  virtual interfaz vif;                             // Interfaz del DUT
 
+  // Funcion de fase Build, si no se encontro la interfaz se cae la simulacion
+  // Tambien se inicializa el puerto de analisis
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if(!uvm_config_db#(virtual interfaz)::get(this, "", "vif", vif))
@@ -16,6 +19,7 @@ class monitor extends uvm_monitor;
     mon_analysis_port = new("mon_analysis_port", this);
   endfunction
 
+  // Funcion de fase Run, se leen los datos de la interfaz
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
@@ -29,7 +33,7 @@ class monitor extends uvm_monitor;
           item_monitor.udrf = vif.udrf;
           mon_analysis_port.write(item_monitor);
           `uvm_info("MON", $sformatf("Leyo item %s", item_monitor.print()), UVM_HIGH)
-        end
+      end
     end
   endtask
 endclass
