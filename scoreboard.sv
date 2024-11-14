@@ -21,7 +21,7 @@ class scoreboard extends uvm_scoreboard;
   bit sticky_bit;          // Sticky bit
 
   bit [31:0] result_aux;   // Resultado auxiliar para guardar en un array
-  [31:0] almacen[$];       // Array para guardar en un CSV
+  bit [31:0] almacen[$];   // Array para guardar en un CSV
 
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;  // Puerto de analisis
 
@@ -142,7 +142,7 @@ class scoreboard extends uvm_scoreboard;
             $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], zero[22:0]);
         end else begin
             `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], zero), UVM_HIGH);
-            result_aux = {sign_sc, NaN};
+            result_aux = {sign_sc, zero};
             almacen.pushback(result_aux);
         end
       end
