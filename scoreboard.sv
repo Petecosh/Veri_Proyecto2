@@ -21,7 +21,7 @@ class scoreboard extends uvm_scoreboard;
   bit sticky_bit;          // Sticky bit
 
   bit [31:0] result_aux;   // Resultado auxiliar para guardar en un array
-  bit [31:0] almacen[$];   // Array para guardar en un CSV
+  [31:0] almacen[$];       // Array para guardar en un CSV
 
   uvm_analysis_imp #(item_seq, scoreboard) m_analysis_imp;  // Puerto de analisis
 
