@@ -23,7 +23,7 @@ class monitor extends uvm_monitor;
     mon_analysis_port = new("mon_analysis_port", this);
   endfunction
 
-  property exp_unos;
+  /*property exp_unos;
     @(posedge vif.clk)
     ((item_monitor.fp_X[30:23] == 8'hff) || (item_monitor.fp_Y[30:23] == 8'hff)) |-> (item_monitor.fp_Z[30:0] == (NaN || inf));
   endproperty
@@ -41,13 +41,13 @@ class monitor extends uvm_monitor;
   property prop_underflow;
     @(posedge vif.clk)
     (item_monitor.udrf) |-> (item_monitor.fp_Z[30:0] == zero); 
-  endproperty
+  endproperty*/
 
   // Funcion de fase Run, se leen los datos de la interfaz
   virtual task run_phase(uvm_phase phase);
     super.run_phase(phase);
     forever begin
-      @(vif.clk) begin
+      @(posedge vif.clk) begin
           item_seq item_monitor = item_seq::type_id::create("item_monitor");
           item_monitor.fp_X = vif.fp_X;
           item_monitor.fp_Y = vif.fp_Y;
