@@ -24,35 +24,19 @@ class monitor extends uvm_monitor;
   endfunction
 
   property exp_unos;
-    @(posedge vif.clk) begin
-      if (item_monitor.fp_X[30:23] == 8'hff || item_monitor.fp_Y[30:23] == 8'hff) begin
-        item_monitor.fp_Z[30:0] == (NaN || inf);
-      end 
-    end
+    ((item_monitor.fp_X[30:23] == 8'hff) || (item_monitor.fp_Y[30:23] == 8'hff)) |-> (item_monitor.fp_Z[30:0] == (NaN || inf));
   endproperty
 
   property exp_cero;
-    @(posedge vif.clk) begin
-      if (item_monitor.fp_X[30:23] == 8'h00 || item_monitor.fp_Y[30:23] == 8'h00) begin
-        item_monitor.fp_Z[30:0] == zero;
-      end
-    end 
+    ((item_monitor.fp_X[30:23] == 8'h00) || (item_monitor.fp_Y[30:23] == 8'h00)) |-> (item_monitor.fp_Z[30:0] == zero); 
   endproperty
 
   property prop_overflow;
-    @(posedge vif.clk) begin
-      if (item_monitor.ovrf) begin
-        item_monitor.fp_Z[30:0] == inf;
-      end 
-    end
+    (item_monitor.ovrf) |-> (item_monitor.fp_Z[30:0] == inf);
   endproperty
 
   property prop_underflow;
-    @(posedge vif.clk) begin
-      if (item_monitor.udrf) begin
-        item_monitor.fp_Z[30:0] == zero;
-      end 
-    end
+    (item_monitor.udrf) |-> (item_monitor.fp_Z[30:0] == zero); 
   endproperty
 
   // Funcion de fase Run, se leen los datos de la interfaz
