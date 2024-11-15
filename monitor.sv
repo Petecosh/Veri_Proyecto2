@@ -24,18 +24,22 @@ class monitor extends uvm_monitor;
   endfunction
 
   property exp_unos;
+    @(posedge vif.clk)
     ((item_monitor.fp_X[30:23] == 8'hff) || (item_monitor.fp_Y[30:23] == 8'hff)) |-> (item_monitor.fp_Z[30:0] == (NaN || inf));
   endproperty
 
   property exp_cero;
+    @(posedge vif.clk)
     ((item_monitor.fp_X[30:23] == 8'h00) || (item_monitor.fp_Y[30:23] == 8'h00)) |-> (item_monitor.fp_Z[30:0] == zero); 
   endproperty
 
   property prop_overflow;
+    @(posedge vif.clk)
     (item_monitor.ovrf) |-> (item_monitor.fp_Z[30:0] == inf);
   endproperty
 
   property prop_underflow;
+    @(posedge vif.clk)
     (item_monitor.udrf) |-> (item_monitor.fp_Z[30:0] == zero); 
   endproperty
 
