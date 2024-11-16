@@ -9,16 +9,21 @@ class scoreboard extends uvm_scoreboard;
 
   bit sign_sc;             // Signo calculado por el scoreboard
   bit [15:0] exp_sc;       // Exponente calculado por el scoreboard
-  bit [23:0] frac_X;       // Fraccion del valor fp_X
-  bit [23:0] frac_Y;       // Fraccion del valor fp_Y
-  bit [47:0] frac_sc;      // Fraccion de resultado Z calculada sin normalizar
+  bit [23:0] mant_X;       // Fraccion del valor fp_X
+  bit [23:0] mant_Y;       // Fraccion del valor fp_Y
+  bit [47:0] mant_full;    // Fraccion de resultado Z calculada sin normalizar
   bit [31:0] sc_result;    // Resultado de la multiplicacion calculado por el scoreboard
   bit [30:0] inf;          // Valor especial infinito para comparacion
   bit [30:0] zero;         // Valor especial cero para comparacion
   bit [30:0] NaN;          // Valor especial NaN para comparacion
 
-  bit [26:0] frc_Z_norm;   // Fraccion de resultado Z normalizado
+  bit norm_n;              // Carry out en normalizer
+  bit norm_r;              // Carry out en redondeo
+  bit [47:0] mant_norm;    // Mantissa normalizada
+  bit [23:0] mant_round;   // Mantissa redondeada
   bit sticky_bit;          // Sticky bit
+  
+  bit [26:0] frc_Z_norm;   // Fraccion de resultado Z normalizado, secuencia de 27 bits
 
   bit [31:0] result_aux;    // Variable auxiliar para guardar en almacen_sc
   item_seq almacen_DUT[$];  // Array para guardar lo que sale del DUT en un CSV
@@ -42,63 +47,82 @@ class scoreboard extends uvm_scoreboard;
     sign_sc = item_sc.fp_X[31] ^ item_sc.fp_Y[31];          // Calculo del signo para Z
     exp_sc = item_sc.fp_X[30:23] + item_sc.fp_Y[30:23] - 8'b0111_1111; // Calculo del exponente para resultado z
 
-    frac_X = {1'b1, item_sc.fp_X[22:0]};     // Obtener la fraccion del valor fp_X
-    frac_Y = {1'b1, item_sc.fp_Y[22:0]};     // Obtener la fraccion del valor fp_Y
+    mant_X = {1'b1, item_sc.fp_X[22:0]};     // Obtener la fraccion del valor fp_X
+    mant_Y = {1'b1, item_sc.fp_Y[22:0]};     // Obtener la fraccion del valor fp_Y
 
-    frac_sc = frac_X * frac_Y;               // Multiplicar las fracciones X * Y, se obtiene secuencia de 47 bits
+    mant_full = mant_X * mant_Y;             // Multiplicar las fracciones X * Y, se obtiene secuencia de 47 bits
 
-    if (frac_sc[47] == 1) begin              // Si el primer bit de la fraccion sin normalizar es 1...
-      frac_sc = frac_sc >> 1;                // Correr 1 vez a la derecha la fraccion sin normalizar
-      exp_sc[7:0] = exp_sc[7:0] + 1;         // Al exponente calculado se le suma 1
-    end else begin                           // Si ese no es el caso...   
-      frac_sc = {frac_sc[46:1], 1'b0};       // Tomar los bits 46:1 y concatenar un 0 al final
+    if (mant_full[47]) begin                 // Si el primer bit de la fraccion sin normalizar es 1...
+      norm_n = 1;                            // Hay un carry out en la normalizacion
+      mant_norm = mant_full;                 // La mantissa se queda igual
+    end else begin                           // Si el primer bit de la fraccion sin normalizar es 0...
+      norm_n = 0;                            // No hay carry out en la normalizacion
+      mant_norm = mant_full << 1;            // Desplazar 1 a la izquierda la mantissa
     end
 
     // Logica de OR
-    if (frac_sc[21:0] == 0) begin            // Si los bits 21:0 son cero...
+    if (mant_full[21:0] == 0) begin          // Si los bits 21:0 son cero...
         sticky_bit = 0;                      // Sticky bit en cero
     end else begin                           // Si ese no es el caso
         sticky_bit = 1;                      // Sticky bit en 1
     end
 
-    frc_Z_norm = {frac_sc[47:22], (frac_sc[23] | sticky_bit)};   // Calcular fraccion de resultado Z normalizado
+    frc_Z_norm = {mant_norm[47:22], sticky_bit};   // Calcular fraccion de resultado Z normalizado
 
     `uvm_info("SCBD", $sformatf("fp_X = %h, fp_Y = %h, fp_Z = %h, r_mode = %h, ovrf = %h, udrf = %h", 
                                  item_sc.fp_X, item_sc.fp_Y, item_sc.fp_Z, item_sc.r_mode, item_sc.ovrf, item_sc.udrf), UVM_LOW)
 
+    // Evaluar si hay carry out en el redondeo
+    // Si la mantissa cuando se va a sumar 1 va a haber carry out, se indica que hubo carry out en el redondeo
+    if (frc_Z_norm[26:3] == 24'b1111_1111_1111_1111_1111_1111) begin
+      norm_r = 1;
+    end else begin
+      norm_r = 0;
+    end
+
     case (item_sc.r_mode)  // Case para modo de redondeo
 
       0: begin                                                 // Modo de redondeo 0
-          if (frc_Z_norm[1]) begin                             // Si el round bit es 1...
-            if (frc_Z_norm[0]) begin                           // Si el (guard ^ sticky bit) es 1..
-              frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;      // Se suma 1, se redondea
-            end else begin                                     // Si el (guard ^ sticky bit) no es 1..
-                if (frc_Z_norm[2] == 1'b1) begin               // Pero el round bit es 1...
-                  frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;  // Redondea hacia arriba solo si es impar
-                end
+          if (frc_Z_norm[2]) begin                             // Si el round bit es 1...
+            if (frc_Z_norm[1] || frc_Z_norm[0]) begin          // Si el guard o sticky bit es 1..
+              mant_round = frc_Z_norm[26:3] + 1'b1;            // Se suma 1, se redondea
+            end else begin
+              if (frc_Z_norm[3]) begin                         // Si el (guard ^ sticky bit) no es 1 pero el round bit es 1..
+                mant_round = frc_Z_norm[26:3] + 1'b1;          // Redondea hacia arriba solo si es impar
+              end else begin                                   // Si ese no es el caso, se queda igual
+                mant_round = frc_Z_norm[26:3];
+              end
             end
-          end 
+          end else begin                                       // Si round bit es 0...
+            mant_round = frc_Z_norm[26:3];                     // Se queda igual
+          end
       end
 
-      1: begin                                                 // Modo de redondeo 1, no se redondea
-                   
+      1: begin
+        mant_round = frc_Z_norm[26:3];                         // Modo de redondeo 1, no se redondea                 
       end
 
       2: begin                                                 // Modo de redondeo 2, hacia menos infinito    
         if (sign_sc) begin                                     // Si el signo es 1 (negativo)...
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;        // Se suma 1, se redondea
+            mant_round = frc_Z_norm[26:3] + 1'b1;              // Se suma 1, se redondea
+        end else begin                                         // Si el signo es 0 (positivo)...
+          mant_round = frc_Z_norm[26:3];                       // Se queda igual
         end
       end
 
       3: begin                                                 // Modo de redondeo 3, hacia mas infinito
         if (!(sign_sc)) begin                                  // Si el signo es 0 (positivo)...
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;        // Se suma 1, se redondea
+            mant_round = frc_Z_norm[26:3] + 1'b1;              // Se suma 1, se redondea
+        end else begin                                         // Si el signo es 1 (negativo)...
+          mant_round = frc_Z_norm[26:3];                       // Se queda igual
         end
       end
 
       4: begin                                                 // Modo de redondeo 4, evalua el round bit
-        if (frc_Z_norm[1]) begin                               // Si el round bit es 1...
-            frc_Z_norm[24:2] = frc_Z_norm[24:2] + 1'b1;        // Se suma 1, se redondea
+        if (frc_Z_norm[2]) begin                               // Si el round bit es 1...
+            mant_round = frc_Z_norm[26:3] + 1'b1;              // Se suma 1, se redondea
+        end else begin                                         // Si el round bit es 0...
+          mant_round = frc_Z_norm[26:3];                       // Se queda igual
         end
       end
 
@@ -108,7 +132,15 @@ class scoreboard extends uvm_scoreboard;
     
     endcase
 
-    sc_result = {sign_sc, exp_sc[7:0], frc_Z_norm[24:2]};      // Concatenar el signo, exponente y fraccion calculados
+    if (norm_r) begin                                          // Si hubo carry out en el redondeo...
+      mant_round = mant_round << 1;                            // La mantissa redondeada se debe correr 1 a la izquierda
+    end
+
+    if (norm_n | norm_r) begin                                 // Si hubo carry out en normalizar o en redondeo...
+      exp_sc[7:0] = exp_sc[7:0] + 1;                           // Se suma 1 al exponente
+    end
+
+    sc_result = {sign_sc, exp_sc[7:0], mant_round[22:0]};      // Concatenar el signo, exponente y fraccion calculados
     
     if(item_sc.fp_Z != sc_result) begin                        // Si el resultado del DUT y del scoreboard son diferentes...
     
