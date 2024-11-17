@@ -51,7 +51,7 @@ module tb;   // Modulo testbench
 
   property exp_cero;
     @(posedge clk)
-    (((_if.fp_X[30:23] == 8'h00) || (_if.fp_Y[30:23] == 8'h00)) && ((_if.fp_X[30:0]!=NaN_tb) && (_if.fp_Y[30:0]==NaN_tb))) |-> (_if.fp_Z[30:0] == zero_tb); 
+    (((_if.fp_X[30:23] == 8'h00) || (_if.fp_Y[30:23] == 8'h00)) && ((_if.fp_X[30:0]!=NaN_tb) || (_if.fp_Y[30:0]!=NaN_tb))) |-> (_if.fp_Z[30:0] == zero_tb); 
   endproperty
 
   property prop_overflow;
