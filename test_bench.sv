@@ -15,13 +15,12 @@ import uvm_pkg::*;
 module tb;   // Modulo testbench
 
   reg clk;   // Reloj
+  bit [30:0] inf_tb;      // Valor especial infinito para comparacion
+  bit [30:0] zero_tb;     // Valor especial cero para comparacion
+  bit [30:0] NaN_tb;      // Valor especial NaN para comparacion
 
   always #10 clk =~ clk;  // El reloj cambia cada 10 ciclos de simulacion
   interfaz _if (clk);     // Interfaz del DUT
-
-  inf_tb = 31'b11111111_00000000000000000000000;  // Valor especial infinito
-  zero_tb = 31'b00000000_00000000000000000000000; // Valor especial cero
-  NaN_tb = 31'b11111111_10000000000000000000000;  // Valor especial NaN
 
   top dut (.clk(clk),            // Instancia del DUT, se conecta a la interfaz
            .fp_X(_if.fp_X),      // Input fp_X
@@ -33,6 +32,9 @@ module tb;   // Modulo testbench
 
   initial begin                  // Initial begin
     clk <= 0;                    // Reloj en 0
+    inf_tb = 31'b11111111_00000000000000000000000;  // Valor especial infinito
+    zero_tb = 31'b00000000_00000000000000000000000; // Valor especial cero
+    NaN_tb = 31'b11111111_10000000000000000000000;  // Valor especial NaN
     uvm_config_db#(virtual interfaz)::set(null, "uvm_test_top", "vif", _if); // Agregar interfaz al config_db
     run_test();                  // Correr el test
   end
