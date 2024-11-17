@@ -35,22 +35,22 @@ module tb;   // Modulo testbench
 
   property exp_unos;
     @(posedge clk)
-    ((fp_X[30:23] == 8'hff) || (fp_Y[30:23] == 8'hff)) |-> (fp_Z[30:0] == (NaN || inf));
+    ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> (_if.fp_Z[30:0] == (NaN || inf));
   endproperty
 
   property exp_cero;
     @(posedge clk)
-    ((fp_X[30:23] == 8'h00) || (fp_Y[30:23] == 8'h00)) |-> (fp_Z[30:0] == zero); 
+    ((_if.fp_X[30:23] == 8'h00) || (_if.fp_Y[30:23] == 8'h00)) |-> (_if.fp_Z[30:0] == zero); 
   endproperty
 
   property prop_overflow;
     @(posedge clk)
-    (ovrf) |-> (fp_Z[30:0] == inf);
+    (_if.ovrf) |-> (_if.fp_Z[30:0] == inf);
   endproperty
 
   property prop_underflow;
     @(posedge clk)
-    (udrf) |-> (fp_Z[30:0] == zero); 
+    (_if.udrf) |-> (_if.fp_Z[30:0] == zero);
   endproperty
 
   assert property(exp_unos) else `uvm_error("TB", $sformatf("Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
