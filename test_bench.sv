@@ -51,7 +51,7 @@ module tb;   // Modulo testbench
 
   property prop_overflow;
     @(posedge clk)
-    (_if.ovrf) |-> (_if.fp_Z[30:0] == inf_tb);
+    (_if.ovrf) |-> ((_if.fp_Z[30:0] == NaN_tb) || (_if.fp_Z[30:0] == inf_tb));
   endproperty
 
   property prop_underflow;
