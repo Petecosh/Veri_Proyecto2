@@ -41,7 +41,7 @@ module tb;   // Modulo testbench
 
   property cero_por_inf;
     @(posedge clk)
-    (((item_sc.fp_X[31:0]==zero_tb) && (item_sc.fp_Y[30:0]==inf_tb)) || ((item_sc.fp_X[31:0]==zero_tb) && (item_sc.fp_Y[30:0]==inf_tb))) |-> (_if.fp_Z[30:0] == NaN_tb);
+    (((_if.fp_X[31:0]==zero_tb) && (_if.fp_Y[30:0]==inf_tb)) || ((_if.fp_X[31:0]==zero_tb) && (_if.fp_Y[30:0]==inf_tb))) |-> (_if.fp_Z[30:0] == NaN_tb);
   endproperty
 
   property exp_unos;
@@ -64,6 +64,7 @@ module tb;   // Modulo testbench
     (_if.udrf) |-> (_if.fp_Z[30:0] == zero_tb);
   endproperty
 
+  assert property(cero_por_inf) else $display("TB, Propiedad cero_por_inf no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z); 
   assert property(exp_unos) else $display("TB, Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
   assert property(exp_cero) else $display("TB, Propiedad exp_cero no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
   assert property(prop_overflow) else $display("TB, Propiedad prop_overflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
