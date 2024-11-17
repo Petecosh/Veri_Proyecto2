@@ -150,7 +150,7 @@ class scoreboard extends uvm_scoreboard;
       // Si no es infinito o NaN, esta mal
       if (item_sc.fp_X[30:23] == 8'hff || item_sc.fp_Y[30:23] == 8'hff) begin
         if (item_sc.fp_Z[30:0] == inf) begin               
-          `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], inf), UVM_HIGH);
+          `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[31:0], {sc_result[31],inf}), UVM_HIGH);
           result_aux = {sign_sc, inf};
           almacen_sc.push_back(result_aux);
           almacen_DUT.push_back(item_sc);
