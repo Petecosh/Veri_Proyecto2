@@ -143,12 +143,29 @@ class scoreboard extends uvm_scoreboard;
     sc_result = {sign_sc, exp_sc[7:0], mant_round[22:0]};      // Concatenar el signo, exponente y fraccion calculados
     
     if(item_sc.fp_Z != sc_result) begin                        // Si el resultado del DUT y del scoreboard son diferentes...
+
+
+      // Si hay multiplicacion cero por infinito...
+      // El resultado debe ser Nan
+      if (((item_sc.fp_X[31:0] == zero) && (item_sc.fp_Y[30:0] == inf)) || ((item_sc.fp_X[31:0] == zero) && (item_sc.fp_Y[30:0] == inf))) begin 
+        if (item_sc.fp_Z[30:0] != NaN) begin         
+            `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))
+            $display("[%g] Resultado Signo: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[31], sign_sc);
+            $display("[%g] Resultado Exponente: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[30:23], NaN);
+            $display("[%g] Resultado Fraccion: fp_Z = %h, sc_result = %h", $time, item_sc.fp_Z[22:0], NaN);
+        end else begin
+            `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z[30:0], NaN), UVM_HIGH);
+            result_aux = {sign_sc, NaN};
+            almacen_sc.push_back(result_aux);
+            almacen_DUT.push_back(item_sc);
+        end
+      end
     
       // Si el exponente de algun multiplicando es 1111_1111...
       // Puede ser un infinito...
       // Puede ser un NaN...
       // Si no es infinito o NaN, esta mal
-      if (item_sc.fp_X[30:23] == 8'hff || item_sc.fp_Y[30:23] == 8'hff) begin
+      else if (item_sc.fp_X[30:23] == 8'hff || item_sc.fp_Y[30:23] == 8'hff) begin
         if (item_sc.fp_Z[30:0] == inf) begin               
           `uvm_info("SCBD",$sformatf("PASS ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, {sign_sc, inf}), UVM_HIGH);
           result_aux = {sign_sc, inf};
