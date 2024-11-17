@@ -32,4 +32,29 @@ module tb;   // Modulo testbench
     uvm_config_db#(virtual interfaz)::set(null, "uvm_test_top", "vif", _if); // Agregar interfaz al config_db
     run_test();                  // Correr el test
   end
+
+  property exp_unos;
+    @(posedge clk)
+    ((fp_X[30:23] == 8'hff) || (fp_Y[30:23] == 8'hff)) |-> (fp_Z[30:0] == (NaN || inf));
+  endproperty
+
+  property exp_cero;
+    @(posedge clk)
+    ((fp_X[30:23] == 8'h00) || (fp_Y[30:23] == 8'h00)) |-> (fp_Z[30:0] == zero); 
+  endproperty
+
+  property prop_overflow;
+    @(posedge clk)
+    (ovrf) |-> (fp_Z[30:0] == inf);
+  endproperty
+
+  property prop_underflow;
+    @(posedge clk)
+    (udrf) |-> (fp_Z[30:0] == zero); 
+  endproperty
+
+  assert property(exp_unos) else `uvm_error("TB", $sformatf("Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
+  assert property(exp_cero) else `uvm_error("TB", $sformatf("Propiedad exp_cero no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
+  assert property(prop_overflow) else `uvm_error("TB", $sformatf("Propiedad prop_overflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
+  assert property(prop_underflow) else `uvm_error("TB", $sformatf("Propiedad prop_underflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
 endmodule
