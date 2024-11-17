@@ -19,6 +19,10 @@ module tb;   // Modulo testbench
   always #10 clk =~ clk;  // El reloj cambia cada 10 ciclos de simulacion
   interfaz _if (clk);     // Interfaz del DUT
 
+  inf_tb = 31'b11111111_00000000000000000000000;  // Valor especial infinito
+  zero_tb = 31'b00000000_00000000000000000000000; // Valor especial cero
+  NaN_tb = 31'b11111111_10000000000000000000000;  // Valor especial NaN
+
   top dut (.clk(clk),            // Instancia del DUT, se conecta a la interfaz
            .fp_X(_if.fp_X),      // Input fp_X
            .fp_Y(_if.fp_Y),      // Input fp_Y
@@ -35,22 +39,22 @@ module tb;   // Modulo testbench
 
   property exp_unos;
     @(posedge clk)
-    ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> (_if.fp_Z[30:0] == (NaN || inf));
+    ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> (_if.fp_Z[30:0] == (NaN_tb || inf_tb));
   endproperty
 
   property exp_cero;
     @(posedge clk)
-    ((_if.fp_X[30:23] == 8'h00) || (_if.fp_Y[30:23] == 8'h00)) |-> (_if.fp_Z[30:0] == zero); 
+    ((_if.fp_X[30:23] == 8'h00) || (_if.fp_Y[30:23] == 8'h00)) |-> (_if.fp_Z[30:0] == zero_tb); 
   endproperty
 
   property prop_overflow;
     @(posedge clk)
-    (_if.ovrf) |-> (_if.fp_Z[30:0] == inf);
+    (_if.ovrf) |-> (_if.fp_Z[30:0] == inf_tb);
   endproperty
 
   property prop_underflow;
     @(posedge clk)
-    (_if.udrf) |-> (_if.fp_Z[30:0] == zero);
+    (_if.udrf) |-> (_if.fp_Z[30:0] == zero_tb);
   endproperty
 
   assert property(exp_unos) else $display("TB, Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
