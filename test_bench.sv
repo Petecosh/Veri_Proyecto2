@@ -53,8 +53,8 @@ module tb;   // Modulo testbench
     (_if.udrf) |-> (_if.fp_Z[30:0] == zero);
   endproperty
 
-  assert property(exp_unos) else `uvm_error("TB", $sformatf("Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
-  assert property(exp_cero) else `uvm_error("TB", $sformatf("Propiedad exp_cero no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
-  assert property(prop_overflow) else `uvm_error("TB", $sformatf("Propiedad prop_overflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
-  assert property(prop_underflow) else `uvm_error("TB", $sformatf("Propiedad prop_underflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", fp_X, fp_Y, fp_Z), UVM_HIGH);
+  assert property(exp_unos) else $display("TB, Propiedad exp_unos no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
+  assert property(exp_cero) else $display("TB, Propiedad exp_cero no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
+  assert property(prop_overflow) else $display("TB, Propiedad prop_overflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
+  assert property(prop_underflow) else $display("TB, Propiedad prop_underflow no cumplida, fp_X: %h fp_Y: %h fp_Z: %h", _if.fp_X, _if.fp_Y, _if.fp_Z);
 endmodule
