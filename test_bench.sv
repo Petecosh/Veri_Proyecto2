@@ -41,7 +41,7 @@ module tb;   // Modulo testbench
 
   property cero_por_inf;
     @(posedge clk)
-    (((item_sc.fp_X[31:0]==zero) && (item_sc.fp_Y[30:0]==inf)) || ((item_sc.fp_X[31:0]==zero) && (item_sc.fp_Y[30:0]==inf))) |-> (_if.fp_Z[30:0] == NaN_tb);
+    (((item_sc.fp_X[31:0]==zero_tb) && (item_sc.fp_Y[30:0]==inf_tb)) || ((item_sc.fp_X[31:0]==zero_tb) && (item_sc.fp_Y[30:0]==inf_tb))) |-> (_if.fp_Z[30:0] == NaN_tb);
   endproperty
 
   property exp_unos;
