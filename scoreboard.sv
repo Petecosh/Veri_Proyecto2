@@ -146,7 +146,8 @@ class scoreboard extends uvm_scoreboard;
 
 
       // Si hay multiplicacion cero por infinito...
-      // El resultado debe ser Nan
+      // El resultado debe ser NaN
+      // Si no es NaN, esta mal
       if (((item_sc.fp_X[31:0] == zero) && (item_sc.fp_Y[30:0] == inf)) || ((item_sc.fp_X[31:0] == zero) && (item_sc.fp_Y[30:0] == inf))) begin 
         if (item_sc.fp_Z[30:0] != NaN) begin         
             `uvm_error("SCBD",$sformatf("ERROR ! Result_dut = %h Result_sc = %h", item_sc.fp_Z, NaN))

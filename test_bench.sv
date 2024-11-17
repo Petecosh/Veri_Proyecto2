@@ -39,6 +39,11 @@ module tb;   // Modulo testbench
     run_test();                  // Correr el test
   end
 
+  property cero_por_inf;
+    @(posedge clk)
+    (((item_sc.fp_X[31:0]==zero) && (item_sc.fp_Y[30:0]==inf)) || ((item_sc.fp_X[31:0]==zero) && (item_sc.fp_Y[30:0]==inf))) |-> (_if.fp_Z[30:0] == NaN_tb);
+  endproperty
+
   property exp_unos;
     @(posedge clk)
     ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> ((_if.fp_Z[30:0] == NaN_tb) || (_if.fp_Z[30:0] == inf_tb));
