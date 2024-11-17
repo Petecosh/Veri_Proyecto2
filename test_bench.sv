@@ -41,7 +41,7 @@ module tb;   // Modulo testbench
 
   property exp_unos;
     @(posedge clk)
-    ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> (_if.fp_Z[30:0] == (NaN_tb || inf_tb));
+    ((_if.fp_X[30:23] == 8'hff) || (_if.fp_Y[30:23] == 8'hff)) |-> ((_if.fp_Z[30:0] == NaN_tb) || (_if.fp_Z[30:0] == inf_tb));
   endproperty
 
   property exp_cero;
